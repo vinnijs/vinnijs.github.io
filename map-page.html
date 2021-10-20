@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Display a map on a webpage</title>
+    <title>No-Location Mode</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
@@ -12,7 +12,41 @@
     </style>
   </head>
   <body>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
+    <style>
+      #map {
+
+      }
+      #top{
+      }
+      .geocoder {
+        position: absolute;
+        width: 76%;
+        left: 12%;
+      }
+      #goButton{
+        left: 89%;
+        width: 11%;
+        background-color: #D2C2F8;
+        position: absolute;
+      }
+      #infoButton{
+        width: 11%;
+        background-color: #D2C2F8;
+        position: absolute;
+      }
+      .mapboxgl-ctrl-geocoder {
+        min-width: 100%;
+      }
+    </style>
     <div id="map"></div>
+    <div id="top">
+      <button id="infoButton" >O</button>
+      <div id="geocoder" class="geocoder"></div>
+      <button id="goButton" onclick="go()">></button>
+    </div>
     <script type="text/javascript" src="script-map.js"></script>
+
   </body>
 </html>

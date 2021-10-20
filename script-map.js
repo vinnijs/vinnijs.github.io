@@ -1,3 +1,10 @@
+var xLng=0.00;
+var xLat=0.00;
+var startingLng=0.00;
+var startingLat=0.00;
+var destinationLng=0.00;
+var destinationLat=0.00;
+
 mapboxgl.accessToken = 'pk.eyJ1IjoidmlubmlqIiwiYSI6ImNraHRiOGR3aTRpbmMyemw2dnVheWxiYmwifQ.RA_Ldq20ag_o9lo8G5jGOA';
 const map = new mapboxgl.Map({
   container: 'map', // container ID
@@ -6,41 +13,158 @@ const map = new mapboxgl.Map({
   zoom: 10 // starting zoom
 });
 
-map.addControl(
-  new mapboxgl.NavigationControl());
+const geocoder = new MapboxGeocoder({
+  accessToken: mapboxgl.accessToken,
+  mapboxgl: mapboxgl
+});
+
+document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+
+geocoder.on('result', function(e) {
+  xLng=e.result.center[0];
+  xLat=e.result.center[1];
+  console.log(xLng)
+  console.log(xLat)
+})
+
+function go(){
+  //console.log(document.getElementById("goButton").innerHTML==">");
+  //console.log(startingLng);
+  //console.log(destinationLat);
+  //console.log(xLng);
+  if(xLat==0.0 && xLng==0.0)alert("Enter an adress!");
+  else if(startingLat==0.0){
+    startingLat=xLat;
+    startingLng=xLng;
+    console.log("starting loc entered");
+    document.getElementById("goButton").innerHTML=">>";
+    setStartingPoint();
+  }
+  else if(destinationLat==0.0){
+    destinationLat=xLat;
+    destinationLng=xLng;
+    console.log("destination loc entered");
+    getRoute();
+    document.getElementById("goButton").innerHTML="C";
+    //document.getElementById("goButton").innerHTML="GO";
+  }
+  else {
+    console.log("cleared");
+    document.getElementById("goButton").innerHTML=">";
+    startingLng=0.0;
+    startingLat=0.0;
+    destinationLng=0.0;
+    destinationLat=0.0;
+  }
+    //else{
+      //getRoute();
+    //}
+}
+function setStartingPoint(){
+  map.getSource('startPoint').setData({
+    "type": "FeatureCollection",
+    "features": [{
+    "type": "Feature",
+    "properties": {"name": "Null Island"},
+    "geometry": {
+    "type": "Point",
+    "coordinates": [ startingLng, startingLat ]
+    }
+    }]
+  });
+}
+
+async function getRoute(){
+  const query = await fetch(
+    `https://api.mapbox.com/directions/v5/mapbox/cycling/${startingLng},${startingLat};${destinationLng},${destinationLat}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
+    { method: 'GET' }
+  );
+  const json = await query.json();
+  const data = json.routes[0];
+  const route = data.geometry.coordinates;
+  const geojson = {
+    type: 'Feature',
+    properties: {},
+    geometry: {
+      type: 'LineString',
+      coordinates: route
+    }
+  }
+  if (map.getSource('route')) {
+    map.getSource('route').setData(geojson);
+  }
+  else {
+    map.addLayer({
+      id: 'route',
+      type: 'line',
+      source: {
+        type: 'geojson',
+        data: geojson
+      },
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round'
+      },
+      paint: {
+        'line-color': '#fcba03',
+        'line-width': 5,
+        'line-opacity': 0.75
+      }
+    });
+  }
+}
+
 
 map.on('load', () => {
+  map.addSource('startPoint', {
+    type: 'geojson',
+    data: {
+    "type": "FeatureCollection",
+    "features": [{
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Point",
+        "coordinates": [ 24.10694,56.9475]
+        }
+      }]
+    }
+  });
+  map.addLayer({
+      'id': 'startPoint',
+      'type': 'circle',
+      'source': 'startPoint',
+      'paint': {
+        'circle-color': '#D2C2F8'
+      },
+  });
   map.addSource('velo-8zsm7r', {
     type: 'vector',
     url: 'mapbox://vinnij.b5xipqys'
   });
   map.addLayer({
-    'id': 'velo-8zsm7r',
-    'type': 'line',
-    'source': 'velo-8zsm7r',
-    'source-layer': 'velo-8zsm7r',
-    'layout': {
-    'line-join': 'round',
-    'line-cap': 'round'
+      'id': 'velo-8zsm7r',
+      'type': 'line',
+      'source': 'velo-8zsm7r',
+      'source-layer': 'velo-8zsm7r',
+      'layout': {
+      'line-join': 'round',
+      'line-cap': 'round'
     },
     'paint': {
-    'line-color': '#ff69b4',
-    'line-width': 1
+      'line-color': '#D2C2F8',
+      'line-width': 3
     }
   });
+
 });
 map.on('click', 'velo-8zsm7r', (e) => {
-  // Copy coordinates array.
   const coordinates = e.features[0].geometry.coordinates[0];
   const landlord = e.features[0].properties.Apsaimniek;
   const length = e.features[0].properties.LENGTH;
   const name = e.features[0].properties.nosaukums_;
   const year = e.features[0].properties.Real_txt;
   const type = e.features[0].properties.Veloinfra;
-
-  // Ensure that if the map is zoomed out such that multiple
-  // copies of the feature are visible, the popup appears
-  // over the copy being pointed to.
   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
   }
@@ -53,6 +177,5 @@ map.on('click', 'velo-8zsm7r', (e) => {
   new mapboxgl.Popup()
     .setLngLat(coordinates)
     .setHTML('<div>' + landlord + '<br>' + length + '<br>' + name + '<br>' + year + '<br>' + type+ '</div>')
-    //.setHTML(<div> + 'landlord' + <br> + 'length' + <br> + 'name' + <br> + 'year' + <br> + 'type'+ </div>)
     .addTo(map);
 });
