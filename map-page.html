@@ -20,21 +20,36 @@
       }
       #top{
       }
+      #infoButton{
+        width: 40px
+        height: 40px;
+        background-color: #61d384;
+        position: absolute;
+        border: none;
+        right: 4%;
+        top: 14%;
+      }
+      #info_poga_bilde{
+        position: relative;
+        padding-top: 5px;
+        
+      }
       .geocoder {
         position: absolute;
-        width: 76%;
-        left: 12%;
+        top: 2%;
+        left: 4%;
+        right: 4%;
+        width: 92%;
+        height: 10%;
+        
       }
       #goButton{
-        left: 89%;
+        right: 4%;
+        top: 10%;
         width: 11%;
-        background-color: #D2C2F8;
+        background-color: #61d384;
         position: absolute;
-      }
-      #infoButton{
-        width: 11%;
-        background-color: #D2C2F8;
-        position: absolute;
+        border: none;
       }
       .mapboxgl-ctrl-geocoder {
         min-width: 100%;
@@ -42,9 +57,11 @@
     </style>
     <div id="map"></div>
     <div id="top">
-      <button id="infoButton" >O</button>
       <div id="geocoder" class="geocoder"></div>
       <button id="goButton" onclick="go()">></button>
+    </div>
+    <div id="bottom">
+      <button id="infoButton"><img src="info_poga_bilde.png" id="info_bilde" width="30px" height="30px"></button>
     </div>
     <script type="text/javascript" src="script-map.js"></script>
 
