@@ -152,7 +152,7 @@ function addPoint(xLng, xLat, id){
 
     new mapboxgl.Popup()
     .setLngLat(coordinates)
-    .setHTML(description)
+    .setHTML('<input type="image" src="uwu_trash.png" width="50px" height="50px"/>')
     .addTo(map);
   });
 }
