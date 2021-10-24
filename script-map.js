@@ -4,6 +4,7 @@ var destinationLng=0.00;
 var destinationLat=0.00;
 var xLng=0.00;
 var xLat=0.00;
+var activePointId="";
 
 //create map
 mapboxgl.accessToken = 'pk.eyJ1IjoidmlubmlqIiwiYSI6ImNraHRiOGR3aTRpbmMyemw2dnVheWxiYmwifQ.RA_Ldq20ag_o9lo8G5jGOA';
@@ -14,19 +15,32 @@ const map = new mapboxgl.Map({
   zoom: 10 // starting zoom
 });
 
+//----------------------------------------------GEOCODER
 //create geocoder
 const geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
   mapboxgl: mapboxgl,
+  marker:{
+    color: '#61D384'
+    //element : '<img src = "circle.png" width="7px" height="7px" id="circle">'
+  },
   bbox: [20.819091796874996,
         55.67138928829547,
         28.311767578125,
-        58.112714441253125],
-  marker: false
+        58.112714441253125]
 });
 document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
+//geocoder functionality
+geocoder.on('result', function(e) {
+  xLng=e.result.center[0];
+  xLat=e.result.center[1];
+  console.log(xLng);
+  console.log(xLat);
+  destinationLat=xLat;
+  destinationLng=xLng;
+})
 
-//user-location
+//------------------------------------------------USER LOCATION
 getLocation();
 function getLocation() {
   if (navigator.geolocation) {
@@ -42,17 +56,7 @@ function updateLocation(position){
   setStartingPoint();
 }
 
-//geocoder functionality
-geocoder.on('result', function(e) {
-  xLng=e.result.center[0];
-  xLat=e.result.center[1];
-  console.log(xLng);
-  console.log(xLat);
-  destinationLat=xLat;
-  destinationLng=xLng;
-})
-
-//routing
+//-------------------------------------------------ROUTING
 function go(){
   if(xLng == 0.00)alert("Please enter an adress");
   else{
@@ -77,6 +81,7 @@ async function getRoute(){
       coordinates: route
     }
   }
+  map.setLayoutProperty('route', 'visibility', 'visible');
   if (map.getSource('route')) {
     map.getSource('route').setData(geojson);
   }
@@ -101,19 +106,18 @@ async function getRoute(){
   }
 }
 
-// //point data
-// var geojsonPoints = {
-//   "type": "FeatureCollection",
-//   "features": []
-// };
-function createGeojsonPoint(xLng, xLat){
+// ---------------------------------------POINT DATA
+//add a point to the map
+function createGeojsonPoint(xLng, xLat, id){
   //var id = xLng+xLat+"";
   var geojson = {
     "type": "FeatureCollection",
     "features":
     [{
       "type": "Feature",
-      "properties": {"name": "PUNKTS"
+      "properties": {
+        "name": "PUNKTS",
+        "id" : id
       },
       "geometry":
       {
@@ -125,7 +129,7 @@ function createGeojsonPoint(xLng, xLat){
   return geojson;
 }
 function addPoint(xLng, xLat, id){
-  var geojson = createGeojsonPoint(xLng, xLat);
+  var geojson = createGeojsonPoint(xLng, xLat, id);
   map.addSource(id,{
     type: 'geojson',
     data: geojson
@@ -135,29 +139,37 @@ function addPoint(xLng, xLat, id){
       'type': 'circle',
       'source': id,
       'paint': {
-        'circle-color': '#61D384'
+        'circle-color': '#61D384',
+        'circle-radius' : 7
       },
   });
   map.on('click', id, (e) => {
     // Copy coordinates array.
     const coordinates = e.features[0].geometry.coordinates.slice();
     const description = e.features[0].properties.name;
-
-    // Ensure that if the map is zoomed out such that multiple
-    // copies of the feature are visible, the popup appears
-    // over the copy being pointed to.
+    activePointId = e.features[0].properties.id;
+    destinationLat=e.lngLat.lat;
+    destinationLng=e.lngLat.lng;
+    getRoute();
     while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
 
     new mapboxgl.Popup()
     .setLngLat(coordinates)
-    .setHTML('<input type="image" src="uwu_trash.png" width="50px" height="50px"/>')
+    .setHTML('<img id="trash" src="uwu_trash.png" width="50px" height="50px" onclick="removePoint()"/>')
     .addTo(map);
   });
 }
+// remove the point from the map
+//document.getElementById("trash").addEventListener('change', removePoint);
+function removePoint(e){
+  console.log("TRASH INITIATED");
+  if (map.getLayer(activePointId)) map.removeLayer(activePointId);
+  map.setLayoutProperty('route', 'visibility', 'none');
+}
 
-//display data
+//---------------------------------------------------DISPLAY DATA
 function setStartingPoint(){
   map.getSource('startPoint').setData({
     "type": "FeatureCollection",
@@ -194,7 +206,8 @@ map.on('load', () => {
       'type': 'circle',
       'source': 'startPoint',
       'paint': {
-        'circle-color': '#61D384'
+        'circle-color': '#61D384',
+        'circle-radius' : 7
       },
   });
   map.addSource('velo-8zsm7r', {
