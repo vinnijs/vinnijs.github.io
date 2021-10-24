@@ -15,7 +15,7 @@ const map = new mapboxgl.Map({
   zoom: 10 // starting zoom
 });
 
-//----------------------------------------------GEOCODER
+//--------------------------------------------------------GEOCODER
 //create geocoder
 const geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
@@ -27,7 +27,8 @@ const geocoder = new MapboxGeocoder({
   bbox: [20.819091796874996,
         55.67138928829547,
         28.311767578125,
-        58.112714441253125]
+        58.112714441253125],
+  clearOnBlur : true
 });
 document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 //geocoder functionality
@@ -40,7 +41,7 @@ geocoder.on('result', function(e) {
   destinationLng=xLng;
 })
 
-//------------------------------------------------USER LOCATION
+//----------------------------------------------------USER LOCATION
 getLocation();
 function getLocation() {
   if (navigator.geolocation) {
@@ -56,7 +57,7 @@ function updateLocation(position){
   setStartingPoint();
 }
 
-//-------------------------------------------------ROUTING
+//-----------------------------------------------------ROUTING
 function go(){
   if(xLng == 0.00)alert("Please enter an adress");
   else{
@@ -106,7 +107,7 @@ async function getRoute(){
   }
 }
 
-// ---------------------------------------POINT DATA
+// -----------------------------------------------POINT DATA
 //add a point to the map
 function createGeojsonPoint(xLng, xLat, id){
   //var id = xLng+xLat+"";
