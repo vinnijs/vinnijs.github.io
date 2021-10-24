@@ -135,7 +135,7 @@ function addPoint(xLng, xLat, id){
       'type': 'circle',
       'source': id,
       'paint': {
-        'circle-color': '#C3F44D'
+        'circle-color': '#61D384'
       },
   });
   map.on('click', id, (e) => {
