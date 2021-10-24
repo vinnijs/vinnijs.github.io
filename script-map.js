@@ -2,6 +2,8 @@ var startingLng=0.00;
 var startingLat=0.00;
 var destinationLng=0.00;
 var destinationLat=0.00;
+var xLng=0.00;
+var xLat=0.00;
 
 //create map
 mapboxgl.accessToken = 'pk.eyJ1IjoidmlubmlqIiwiYSI6ImNraHRiOGR3aTRpbmMyemw2dnVheWxiYmwifQ.RA_Ldq20ag_o9lo8G5jGOA';
@@ -15,7 +17,12 @@ const map = new mapboxgl.Map({
 //create geocoder
 const geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
-  mapboxgl: mapboxgl
+  mapboxgl: mapboxgl,
+  bbox: [20.819091796874996,
+        55.67138928829547,
+        28.311767578125,
+        58.112714441253125],
+  marker: false
 });
 document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
@@ -47,7 +54,12 @@ geocoder.on('result', function(e) {
 
 //routing
 function go(){
-  getRoute();
+  if(xLng == 0.00)alert("Please enter an adress");
+  else{
+    addPoint(xLng, xLat, xLng+xLat+"");
+    getRoute();
+  }
+
 }
 async function getRoute(){
   const query = await fetch(
@@ -89,14 +101,73 @@ async function getRoute(){
   }
 }
 
+// //point data
+// var geojsonPoints = {
+//   "type": "FeatureCollection",
+//   "features": []
+// };
+function createGeojsonPoint(xLng, xLat){
+  //var id = xLng+xLat+"";
+  var geojson = {
+    "type": "FeatureCollection",
+    "features":
+    [{
+      "type": "Feature",
+      "properties": {"name": "PUNKTS"
+      },
+      "geometry":
+      {
+      "type": "Point",
+      "coordinates": [ xLng, xLat ]
+      }
+    }]
+  }
+  return geojson;
+}
+function addPoint(xLng, xLat, id){
+  var geojson = createGeojsonPoint(xLng, xLat);
+  map.addSource(id,{
+    type: 'geojson',
+    data: geojson
+  });
+  map.addLayer({
+      'id': id,
+      'type': 'circle',
+      'source': id,
+      'paint': {
+        'circle-color': '#C3F44D'
+      },
+  });
+  map.on('click', id, (e) => {
+    // Copy coordinates array.
+    const coordinates = e.features[0].geometry.coordinates.slice();
+    const description = e.features[0].properties.name;
+
+    // Ensure that if the map is zoomed out such that multiple
+    // copies of the feature are visible, the popup appears
+    // over the copy being pointed to.
+    while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+    coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+    }
+
+    new mapboxgl.Popup()
+    .setLngLat(coordinates)
+    .setHTML(description)
+    .addTo(map);
+  });
+}
+
 //display data
 function setStartingPoint(){
   map.getSource('startPoint').setData({
     "type": "FeatureCollection",
-    "features": [{
+    "features": [
+    {
     "type": "Feature",
-    "properties": {"name": "Your Location"},
-    "geometry": {
+    "properties": {"name": "Your Location"
+    },
+    "geometry":
+    {
     "type": "Point",
     "coordinates": [ startingLng, startingLat ]
     }
@@ -156,12 +227,6 @@ map.on('click', 'velo-8zsm7r', (e) => {
   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
   }
-  // console.log(coordinates);
-  // console.log(landlord);
-  // console.log(length);
-  // console.log(name);
-  // console.log(year);
-  // console.log(type);
   new mapboxgl.Popup()
     .setLngLat(coordinates)
     .setHTML('<div>' + landlord + '<br>' + length + '<br>' + name + '<br>' + year + '<br>' + type+ '</div>')

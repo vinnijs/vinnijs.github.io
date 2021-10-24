@@ -15,10 +15,25 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js'></script>
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css' type='text/css' />
     <style>
-      #map {
-
+      .mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+        border-bottom-color: #C3F44D;
       }
-      #top{
+      .mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+      .mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+        border-top-color: #C3F44D;
+      }
+      .mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+        border-right-color: #C3F44D;
+      }
+      .mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+        border-left-color: #C3F44D;
+      }
+      .mapboxgl-popup-content {
+        background-color: #C3F44D;
+        border-color: #C3F44D;
       }
       #infoButton{
         position: absolute;
@@ -32,7 +47,7 @@
         left: 4%;
         right: 4%;
         width: 92%;
-        height: 10%;  
+        height: 10%;
       }
       #goButton{
         right: 4%;
