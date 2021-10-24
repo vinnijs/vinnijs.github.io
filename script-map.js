@@ -1,10 +1,9 @@
-var xLng=0.00;
-var xLat=0.00;
 var startingLng=0.00;
 var startingLat=0.00;
 var destinationLng=0.00;
 var destinationLat=0.00;
 
+//create map
 mapboxgl.accessToken = 'pk.eyJ1IjoidmlubmlqIiwiYSI6ImNraHRiOGR3aTRpbmMyemw2dnVheWxiYmwifQ.RA_Ldq20ag_o9lo8G5jGOA';
 const map = new mapboxgl.Map({
   container: 'map', // container ID
@@ -13,67 +12,43 @@ const map = new mapboxgl.Map({
   zoom: 10 // starting zoom
 });
 
+//create geocoder
 const geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
   mapboxgl: mapboxgl
 });
-
 document.getElementById('geocoder').appendChild(geocoder.onAdd(map));
 
+//user-location
+getLocation();
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.watchPosition(updateLocation)
+  } else {
+    alert("Please allow geolocation or move to a browser that supports it!");
+  }
+}
+function updateLocation(position){
+  console.log("Position Updated!");
+  startingLat=position.coords.latitude;
+  startingLng=position.coords.longitude;
+  setStartingPoint();
+}
+
+//geocoder functionality
 geocoder.on('result', function(e) {
   xLng=e.result.center[0];
   xLat=e.result.center[1];
-  console.log(xLng)
-  console.log(xLat)
+  console.log(xLng);
+  console.log(xLat);
+  destinationLat=xLat;
+  destinationLng=xLng;
 })
 
+//routing
 function go(){
-  //console.log(document.getElementById("goButton").innerHTML==">");
-  //console.log(startingLng);
-  //console.log(destinationLat);
-  //console.log(xLng);
-  if(xLat==0.0 && xLng==0.0)alert("Enter an adress!");
-  else if(startingLat==0.0){
-    startingLat=xLat;
-    startingLng=xLng;
-    console.log("starting loc entered");
-    document.getElementById("goButton").innerHTML=">>";
-    setStartingPoint();
-  }
-  else if(destinationLat==0.0){
-    destinationLat=xLat;
-    destinationLng=xLng;
-    console.log("destination loc entered");
-    getRoute();
-    document.getElementById("goButton").innerHTML="C";
-    //document.getElementById("goButton").innerHTML="GO";
-  }
-  else {
-    console.log("cleared");
-    document.getElementById("goButton").innerHTML=">";
-    startingLng=0.0;
-    startingLat=0.0;
-    destinationLng=0.0;
-    destinationLat=0.0;
-  }
-    //else{
-      //getRoute();
-    //}
+  getRoute();
 }
-function setStartingPoint(){
-  map.getSource('startPoint').setData({
-    "type": "FeatureCollection",
-    "features": [{
-    "type": "Feature",
-    "properties": {"name": "Null Island"},
-    "geometry": {
-    "type": "Point",
-    "coordinates": [ startingLng, startingLat ]
-    }
-    }]
-  });
-}
-
 async function getRoute(){
   const query = await fetch(
     `https://api.mapbox.com/directions/v5/mapbox/cycling/${startingLng},${startingLat};${destinationLng},${destinationLat}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
@@ -114,7 +89,20 @@ async function getRoute(){
   }
 }
 
-
+//display data
+function setStartingPoint(){
+  map.getSource('startPoint').setData({
+    "type": "FeatureCollection",
+    "features": [{
+    "type": "Feature",
+    "properties": {"name": "Your Location"},
+    "geometry": {
+    "type": "Point",
+    "coordinates": [ startingLng, startingLat ]
+    }
+    }]
+  });
+}
 map.on('load', () => {
   map.addSource('startPoint', {
     type: 'geojson',
@@ -135,7 +123,7 @@ map.on('load', () => {
       'type': 'circle',
       'source': 'startPoint',
       'paint': {
-        'circle-color': '#D2C2F8'
+        'circle-color': '#61D384'
       },
   });
   map.addSource('velo-8zsm7r', {
@@ -168,12 +156,12 @@ map.on('click', 'velo-8zsm7r', (e) => {
   while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
   }
-  console.log(coordinates);
-  console.log(landlord);
-  console.log(length);
-  console.log(name);
-  console.log(year);
-  console.log(type);
+  // console.log(coordinates);
+  // console.log(landlord);
+  // console.log(length);
+  // console.log(name);
+  // console.log(year);
+  // console.log(type);
   new mapboxgl.Popup()
     .setLngLat(coordinates)
     .setHTML('<div>' + landlord + '<br>' + length + '<br>' + name + '<br>' + year + '<br>' + type+ '</div>')
