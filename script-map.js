@@ -15,7 +15,7 @@ const map = new mapboxgl.Map({
   zoom: 10 // starting zoom
 });
 
-//--------------------------------------------------------GEOCODER
+//---------------------------------------------------GEOCODER
 //create geocoder
 const geocoder = new MapboxGeocoder({
   accessToken: mapboxgl.accessToken,
@@ -41,7 +41,7 @@ geocoder.on('result', function(e) {
   destinationLng=xLng;
 })
 
-//----------------------------------------------------USER LOCATION
+//---------------------------------------------------USER LOCATION
 getLocation();
 function getLocation() {
   if (navigator.geolocation) {
@@ -51,22 +51,22 @@ function getLocation() {
   }
 }
 function updateLocation(position){
-  console.log("Position Updated!");
+  console.log("Position Updated! *pls dont move too fast*");
   startingLat=position.coords.latitude;
   startingLng=position.coords.longitude;
   setStartingPoint();
 }
 
-//-----------------------------------------------------ROUTING
+//---------------------------------------------------ROUTING
 function go(){
   if(xLng == 0.00)alert("Please enter an adress");
   else{
     addPoint(xLng, xLat, xLng+xLat+"");
     getRoute();
   }
-
 }
 async function getRoute(){
+  console.log("routing to ... (ur probably better off picking the route urself)");
   const query = await fetch(
     `https://api.mapbox.com/directions/v5/mapbox/cycling/${startingLng},${startingLat};${destinationLng},${destinationLat}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`,
     { method: 'GET' }
@@ -83,6 +83,7 @@ async function getRoute(){
     }
   }
   map.setLayoutProperty('route', 'visibility', 'visible');
+  console.log("la route has appeared");
   if (map.getSource('route')) {
     map.getSource('route').setData(geojson);
   }
@@ -107,7 +108,7 @@ async function getRoute(){
   }
 }
 
-// -----------------------------------------------POINT DATA
+//---------------------------------------------------POINT DATA
 //add a point to the map
 function createGeojsonPoint(xLng, xLat, id){
   //var id = xLng+xLat+"";
@@ -145,7 +146,6 @@ function addPoint(xLng, xLat, id){
       },
   });
   map.on('click', id, (e) => {
-    // Copy coordinates array.
     const coordinates = e.features[0].geometry.coordinates.slice();
     const description = e.features[0].properties.name;
     activePointId = e.features[0].properties.id;
@@ -161,13 +161,14 @@ function addPoint(xLng, xLat, id){
     .setHTML('<img id="trash" src="uwu_trash.png" width="50px" height="50px" onclick="removePoint()"/>')
     .addTo(map);
   });
+  console.log("THE POINT HAS BEEN ADDED!!!");
 }
 // remove the point from the map
-//document.getElementById("trash").addEventListener('change', removePoint);
 function removePoint(e){
-  console.log("TRASH INITIATED");
+  console.log("TRASH INITIATED *batman voice*");
   if (map.getLayer(activePointId)) map.removeLayer(activePointId);
   map.setLayoutProperty('route', 'visibility', 'none');
+  console.log("la route has disappeared");
 }
 
 //---------------------------------------------------DISPLAY DATA
@@ -229,7 +230,6 @@ map.on('load', () => {
       'line-width': 3
     }
   });
-
 });
 map.on('click', 'velo-8zsm7r', (e) => {
   const coordinates = e.features[0].geometry.coordinates[0];
