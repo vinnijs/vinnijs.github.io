@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Map page</title>
+    <title>Map page test 2</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.1/mapbox-gl.js"></script>
@@ -37,23 +37,23 @@
         border-radius: 18%;
       }
       #infoButton{
-        position: absolute;
+        position: fixed;
         border: none;
         right: 4%;
-        top: 18%;
+        margin-top: 115px; 
       }
       .geocoder {
-        position: absolute;
-        top: 2%;
+        position: fixed;
+        top: 15px;
         left: 4%;
         right: 4%;
         width: 92%;
-        height: 10%;
+        height: 40px;
       }
       #goButton{
         right: 4%;
-        top: 10%;
-        position: absolute;
+        margin-top: 65px;
+        position: fixed;
         border: none;
       }
       .mapboxgl-ctrl-geocoder {
@@ -63,8 +63,12 @@
     <div id="map"></div>
     <div id="top">
       <div id="geocoder" class="geocoder"></div><!--the meklesanas strunts-->
-      <button onclick="go()">><img src="uwu_go.png" id="goButton" width="50px" height="50px"></button>
-      <a href="info-page.html"><img src="uwu_info.png" width="50px" height="50px" id="infoButton"></a>
+      <div>
+        <button onclick="go()">><img src="uwu_go.png" id="goButton" width="50px" height="50px"></button>
+      </div>
+      <div>
+        <a href="info-page.html"><img src="uwu_info.png" width="50px" height="50px" id="infoButton"></a>
+      </div>
     </div>
     <script type="text/javascript" src="script-map.js"></script>
 
