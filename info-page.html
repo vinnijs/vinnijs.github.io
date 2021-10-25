@@ -11,8 +11,9 @@
   		#back_button{
   			top: 2%;
   			left: 2%;
+  			margin-top: 8px;
   			display: inline-block;
-  			position: relative;
+  			position: sticky;
   		}
   		#inst_virs{
   			font-family: 'Manrope', sans-serif;
@@ -68,13 +69,13 @@
   		#augsa{
   			position: sticky;
   		}
-  		#logo_augsa{
-  			display: inline-block;
-  		}
   	</style>
   	<div id="augsa">
-  		<a href="map-page.html"><img src="uwu_back.png" width="50px" height="50px" id="back_button"></a>
-  		<img src="uwu_logo_dark.png" width="283" height="129" id="logo_augsa">
+  		<map name="infographic"> 
+  			<area shape="rect" coords="5,5,52,52" href="map-page.html"  alt="back" />
+  		</map>
+  		<img src="uwu_logo_back.png" width="334px" height="129px" id="back_button" usemap="#infographic">
+  		
   	</div>
   	<div>
   		<h1 id="inst_virs">Instrukcijas</h1>
