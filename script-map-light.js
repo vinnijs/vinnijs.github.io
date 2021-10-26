@@ -10,7 +10,7 @@ var activePointId="";
 mapboxgl.accessToken = 'pk.eyJ1IjoidmlubmlqIiwiYSI6ImNraHRiOGR3aTRpbmMyemw2dnVheWxiYmwifQ.RA_Ldq20ag_o9lo8G5jGOA';
 const map = new mapboxgl.Map({
   container: 'map', // container ID
-  style: 'mapbox://styles/mapbox/dark-v10', // style URL
+  style: 'mapbox://styles/mapbox/light-v10', // style URL
   center: [24.2, 57.0], // starting position [lng, lat]
   zoom: 10 // starting zoom
 });
