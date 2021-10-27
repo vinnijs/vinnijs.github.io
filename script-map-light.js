@@ -14,18 +14,7 @@ const map = new mapboxgl.Map({
   center: [24.2, 57.0], // starting position [lng, lat]
   zoom: 10 // starting zoom
 });
-//---------------------------------------------------MODE CHANGE
-// var lightmode=0;
-// function modeChange(){
-//   if(lightmode==1){
-//     map.style='mapbox://styles/mapbox/dark-v10';
-//     lightmode=0;
-//   }
-//   else {
-//     lightmode=1;
-//     map.style='mapbox://styles/mapbox/light-v10';
-//   }
-// }
+
 //---------------------------------------------------GEOCODER
 //create geocoder
 const geocoder = new MapboxGeocoder({
@@ -94,6 +83,10 @@ async function getRoute(){
     }
   }
   map.setLayoutProperty('route', 'visibility', 'visible');
+  map.fitBounds([
+    [Math.min(startingLng, destinationLng)-0.01, Math.min(startingLat, destinationLat)-0.01],
+    [Math.max(startingLng, destinationLng)+0.04, Math.max(startingLat, destinationLat)+0.04]
+  ]);
   console.log("la route has appeared");
   if (map.getSource('route')) {
     map.getSource('route').setData(geojson);
@@ -179,6 +172,7 @@ function addPoint(xLng, xLat, id){
 function removePoint(e){
   console.log("TRASH INITIATED *batman voice*");
   if (map.getLayer(activePointId)) map.removeLayer(activePointId);
+  if(map.getSource(activePointId)) map.removeSource(activePointId);
   map.setLayoutProperty('route', 'visibility', 'none');
   console.log("la route has disappeared");
   popup.remove();
