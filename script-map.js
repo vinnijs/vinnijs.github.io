@@ -113,7 +113,7 @@ async function getRoute(){
       paint: {
         'line-color': '#fcba03',
         'line-width': 5,
-        'line-opacity': 0.75
+        'line-opacity': 0.5
       }
     });
   }
@@ -141,6 +141,7 @@ function createGeojsonPoint(xLng, xLat, id){
   }
   return geojson;
 }
+var popup;
 function addPoint(xLng, xLat, id){
   var geojson = createGeojsonPoint(xLng, xLat, id);
   map.addSource(id,{
@@ -167,7 +168,7 @@ function addPoint(xLng, xLat, id){
     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
 
-    new mapboxgl.Popup()
+    popup = new mapboxgl.Popup()
     .setLngLat(coordinates)
     .setHTML('<img id="trash" src="uwu_trash.png" width="50px" height="50px" onclick="removePoint()"/>')
     .addTo(map);
@@ -180,6 +181,7 @@ function removePoint(e){
   if (map.getLayer(activePointId)) map.removeLayer(activePointId);
   map.setLayoutProperty('route', 'visibility', 'none');
   console.log("la route has disappeared");
+  popup.remove();
 }
 
 //---------------------------------------------------DISPLAY DATA
