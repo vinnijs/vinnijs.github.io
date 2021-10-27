@@ -59,6 +59,7 @@ function updateLocation(position){
 
 //---------------------------------------------------ROUTING
 function go(){
+  geocoder.clear();
   if(xLng == 0.00)alert("Please enter an adress");
   else{
     addPoint(xLng, xLat, xLng+xLat+"");
@@ -134,7 +135,7 @@ function createGeojsonPoint(xLng, xLat, id){
   }
   return geojson;
 }
-var popup;
+var popups = [];
 function addPoint(xLng, xLat, id){
   var geojson = createGeojsonPoint(xLng, xLat, id);
   map.addSource(id,{
@@ -161,10 +162,11 @@ function addPoint(xLng, xLat, id){
     coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
     }
 
-    popup = new mapboxgl.Popup()
+    var popup =  new mapboxgl.Popup()
     .setLngLat(coordinates)
     .setHTML('<img id="trash" src="uwu_trash.png" width="50px" height="50px" onclick="removePoint()"/>')
     .addTo(map);
+    popups.push(popup);
   });
   console.log("THE POINT HAS BEEN ADDED!!!");
 }
@@ -175,7 +177,7 @@ function removePoint(e){
   if(map.getSource(activePointId)) map.removeSource(activePointId);
   map.setLayoutProperty('route', 'visibility', 'none');
   console.log("la route has disappeared");
-  popup.remove();
+  popups.forEach(popup => popup.remove());
 }
 
 //---------------------------------------------------DISPLAY DATA
