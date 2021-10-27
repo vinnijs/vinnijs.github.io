@@ -237,7 +237,7 @@ map.on('load', () => {
       'line-cap': 'round'
     },
     'paint': {
-      'line-color': '#D2C2F8',
+      'line-color': '#7b73e0',
       'line-width': 3
     }
   });
