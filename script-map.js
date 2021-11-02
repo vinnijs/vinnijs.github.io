@@ -252,6 +252,9 @@ map.on('load', () => {
       'line-width': 3
     }
   });
+  for (const [key, value] of points.entries()) {
+    addPoint(value.xLng, value.xLat, ""+value.xLng+value.xLat);
+  }
 });
 map.on('click', 'velo-8zsm7r', (e) => {
   const coordinates = e.features[0].geometry.coordinates[0];
