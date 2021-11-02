@@ -70,13 +70,25 @@ function go(){
   geocoder.clear();
   if(xLng == 0.00)alert("Please enter an adress");
   else{
-    addPoint(xLng, xLat, xLng+xLat+"");
-    points.set('placename'+xLng+xLat, {xLng, xLat});
-    localStorage.savedPoints = JSON.stringify(Array.from(points));
-    console.log(points.size);
-    console.log(JSON.parse(localStorage.savedPoints));
+    getAddress(xLng, xLat);
     getRoute();
   }
+}
+async function getAddress(aLng, aLat){
+  //url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/${destinationLng},${destinationLat}.json?access_token=${mapboxgl.accessToken}'
+  const query = await fetch(
+    'https://api.mapbox.com/geocoding/v5/mapbox.places/'+aLng+','+aLat+'.json?access_token=pk.eyJ1IjoidmlubmlqIiwiYSI6ImNraHRiOGR3aTRpbmMyemw2dnVheWxiYmwifQ.RA_Ldq20ag_o9lo8G5jGOA',
+    { method: 'GET' }
+  );
+  const json = await query.json();
+  const data = json.features[0];
+  const name = data.text;
+  console.log(name);
+  addPoint(aLng, aLat, name);
+  points.set(name, {aLng, aLat});
+  localStorage.savedPoints = JSON.stringify(Array.from(points));
+  console.log(points.size);
+  console.log(JSON.parse(localStorage.savedPoints));
 }
 async function getRoute(){
   console.log("routing to ... (ur probably better off picking the route urself)");
