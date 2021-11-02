@@ -5,6 +5,7 @@ var destinationLat=0.00;
 var xLng=0.00;
 var xLat=0.00;
 var activePointId="";
+var points = new Map();
 
 //create map
 mapboxgl.accessToken = 'pk.eyJ1IjoidmlubmlqIiwiYSI6ImNraHRiOGR3aTRpbmMyemw2dnVheWxiYmwifQ.RA_Ldq20ag_o9lo8G5jGOA';
@@ -41,6 +42,13 @@ geocoder.on('result', function(e) {
   destinationLng=xLng;
 })
 
+//--------------------------------------------------SAVED POINTS
+if(localStorage.savedPoints != undefined){
+  points = new Map(JSON.parse(localStorage.savedPoints));
+  console.log(points);
+  console.log(points.size);
+}
+
 //---------------------------------------------------USER LOCATION
 getLocation();
 function getLocation() {
@@ -63,6 +71,10 @@ function go(){
   if(xLng == 0.00)alert("Please enter an adress");
   else{
     addPoint(xLng, xLat, xLng+xLat+"");
+    points.set('placename'+xLng+xLat, {xLng, xLat});
+    localStorage.savedPoints = JSON.stringify(Array.from(points));
+    console.log(points.size);
+    console.log(JSON.parse(localStorage.savedPoints));
     getRoute();
   }
 }
@@ -175,6 +187,7 @@ function removePoint(e){
   console.log("TRASH INITIATED *batman voice*");
   if (map.getLayer(activePointId)) map.removeLayer(activePointId);
   if(map.getSource(activePointId)) map.removeSource(activePointId);
+  points.delete("placename"+activePointId);
   map.setLayoutProperty('route', 'visibility', 'none');
   console.log("la route has disappeared");
   popups.forEach(popup => popup.remove());
