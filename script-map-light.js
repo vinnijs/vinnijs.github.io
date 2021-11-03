@@ -246,21 +246,57 @@ map.on('load', () => {
         'circle-radius' : 7
       },
   });
-  map.addSource('velo-8zsm7r', {
+  map.addSource('velo-RIGA', {
     type: 'vector',
-    url: 'mapbox://vinnij.b5xipqys'
+    url: 'mapbox://vinnij.d9fanad2'
   });
   map.addLayer({
-      'id': 'velo-8zsm7r',
+      'id': 'velo-RIGA',
       'type': 'line',
-      'source': 'velo-8zsm7r',
-      'source-layer': 'velo-8zsm7r',
+      'source': 'velo-RIGA',
+      'source-layer': 'veloRIGA-filtered-demicf',
       'layout': {
       'line-join': 'round',
       'line-cap': 'round'
     },
     'paint': {
       'line-color': '#7b73e0',
+      'line-width': 3
+    }
+  });
+  map.addSource('velo-MARUPE', {
+    type: 'vector',
+    url: 'mapbox://vinnij.0l7pjl01'
+  });
+  map.addLayer({
+      'id': 'velo-MARUPE',
+      'type': 'line',
+      'source': 'velo-MARUPE',
+      'source-layer': 'veloMARUPE-filtered-3myozo',
+      'layout': {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    'paint': {
+      'line-color': '#7b73e0',
+      'line-width': 3
+    }
+  });
+  map.addSource('velo-SAVIENOJUMI', {
+    type: 'vector',
+    url: 'mapbox://vinnij.ccac09q4'
+  });
+  map.addLayer({
+      'id': 'velo-SAVIENOJUMI',
+      'type': 'line',
+      'source': 'velo-SAVIENOJUMI',
+      'source-layer': 'velo_papild-240xb8',
+      'layout': {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    'paint': {
+      'line-color': '#D2C2F8',
       'line-width': 3
     }
   });
