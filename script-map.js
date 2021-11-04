@@ -162,19 +162,26 @@ function createGeojsonPoint(xLng, xLat, id){
 var popups = [];
 function addPoint(xLng, xLat, id){
   var geojson = createGeojsonPoint(xLng, xLat, id);
-  map.addSource(id,{
-    type: 'geojson',
-    data: geojson
-  });
-  map.addLayer({
-      'id': id,
-      'type': 'circle',
-      'source': id,
-      'paint': {
-        'circle-color': '#61D384',
-        'circle-radius' : 7
-      },
-  });
+  if (map.getSource(id)) {
+    map.getSource(id).setData(geojson);
+  }
+  else{
+    map.addSource(id,{
+      type: 'geojson',
+      data: geojson
+    });
+  }
+  if(! map.getLayer(id)){
+    map.addLayer({
+        'id': id,
+        'type': 'circle',
+        'source': id,
+        'paint': {
+          'circle-color': '#61D384',
+          'circle-radius' : 7
+        },
+    });
+  }
   map.on('click', id, (e) => {
     const coordinates = e.features[0].geometry.coordinates.slice();
     const description = e.features[0].properties.name;
