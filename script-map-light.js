@@ -284,19 +284,19 @@ map.on('load', () => {
   });
   map.addSource('velo-SAVIENOJUMI', {
     type: 'vector',
-    url: 'mapbox://vinnij.ccac09q4'
+    url: 'mapbox://vinnij.4i52c29c'
   });
   map.addLayer({
       'id': 'velo-SAVIENOJUMI',
       'type': 'line',
       'source': 'velo-SAVIENOJUMI',
-      'source-layer': 'velo_papild-240xb8',
+      'source-layer': 'velo-PAPILDUS-9r14vo',
       'layout': {
       'line-join': 'round',
       'line-cap': 'round'
     },
     'paint': {
-      'line-color': '#D2C2F8',
+      'line-color': '#A79BEC',
       'line-width': 3
     }
   });
